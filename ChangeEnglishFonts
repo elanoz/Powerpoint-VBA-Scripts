@@ -1,0 +1,54 @@
+Sub changeEnglishFonts()
+    
+    Dim sh          As Shape
+    Dim sld         As Slide
+    Dim FontName    As String
+    
+    FontName = InputBox("please insert font name ", "font name", "Arial")
+    
+    For Each sld In ActivePresentation.Slides
+        
+        For Each sh In sld.Shapes
+            
+            If sh.Type = msoGroup Then
+                
+                For x = 1 To sh.GroupItems.Count
+                    If sh.GroupItems(x).HasTextFrame Then
+                        If sh.GroupItems(x).TextFrame.HasText Then
+                            
+                            sh.TextFrame.TextRange.Font.Name = FontName
+                            
+                        End If
+                        
+                    End If
+                Next x
+            End If
+            
+            If sh.Type = msoTable Then
+                With sh.Table
+                    For lRow = 1 To .Rows.Count
+                        For lCol = 1 To .Columns.Count
+                            With .Cell(lRow, lCol).Shape
+                                
+                                If .HasTextFrame Then
+                                    If .TextFrame.HasText Then
+                                        .TextFrame.TextRange.Font.Name = FontName
+                                    End If
+                                End If
+                            End With
+                        Next        ' column
+                    Next        ' row
+                    
+                End With
+                
+            End If
+            
+            If sh.HasTextFrame Then
+                If sh.TextFrame.HasText Then
+                    sh.TextFrame.TextRange.Font.Name = FontName
+                End If
+            End If
+            
+        Next sh
+    Next sld
+End Sub
